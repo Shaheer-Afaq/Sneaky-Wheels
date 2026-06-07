@@ -1,2 +1,2 @@
 # Sneaky-Wheels
-This is a remote controlled mini spy car using ESP-NOW and ESP-CAM. It is designed in Onshape.
+This is a remote controlled mini spy car designed in Onshape. The micro-controllers are two ESP32s which communicate with ESP-NOW. There is also an ESP-CAM attached to it for live video streaming.
