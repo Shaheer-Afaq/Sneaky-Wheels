@@ -1,5 +1,8 @@
 # Sneaky-Wheels
-This is a remote controlled mini spy car designed in [Onshape](https://cad.onshape.com/documents/f87c3accc4a240ed7dab0743/w/c73ea29120acd2fcd4fea41f/e/9db8dd83f8640be167385dda?renderMode=0&uiState=6a2569f5615ba25f815471c3).
+This is a remote controlled mini spy car designed in Onshape.
+
+[Onshape Document
+](https://cad.onshape.com/documents/f87c3accc4a240ed7dab0743/w/c73ea29120acd2fcd4fea41f/e/9db8dd83f8640be167385dda?renderMode=0&uiState=6a2569f5615ba25f815471c3)
 
 I am building this for https://macondo.hackclub.com. Right now the 3d design for the casings has been completed. I'll build it once Macondo provides me with the funding.
 
