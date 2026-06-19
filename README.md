@@ -22,4 +22,6 @@ Joysticks and protoboard are fastened with M2 screws
 
 Pcb componenets are soldered on the protoboard
 
-Buttons, potentiometers and cells are fitted in slots and would be glued.
+Buttons, potentiometers and cells are fitted in slots and would be glued
+
+The lids are aligned with slots, and fastened with M2 screws
