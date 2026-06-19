@@ -19,5 +19,7 @@ I am building this for https://macondo.hackclub.com.
 - Potentiometers, push buttons
 
 Joysticks and protoboard are fastened with M2 screws
+
 Pcb componenets are soldered on the protoboard
+
 Buttons, potentiometers and cells are fitted in slots and would be glued.
