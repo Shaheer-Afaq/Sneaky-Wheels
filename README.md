@@ -1,10 +1,10 @@
 # Sneaky-Wheels
-This is a remote controlled mini spy car designed in Onshape.
+This is a remote controlled mini spy car designed in Onshape. I decided to build this because ive always wanted to drive an RC car with the car's POV. I like to watch and record remotely controlled terrain exploration. I finally got the chance to build this due to [Macondo's](https://macondo.hackclub.com.) funding program.
+
 
 [Onshape Document
 ](https://cad.onshape.com/documents/f87c3accc4a240ed7dab0743/w/c73ea29120acd2fcd4fea41f/e/9db8dd83f8640be167385dda?renderMode=0&uiState=6a2569f5615ba25f815471c3)
 
-I am building this for https://macondo.hackclub.com.
 
 ## Components to be used:
 - Esp32 as MCUs
