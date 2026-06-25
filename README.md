@@ -67,6 +67,9 @@ The wiring diagram (screenshot in the assembly section below) is made in EasyEDA
 14. Put the wheels on each motor.
 
 ---
+<img width="1113" height="639" alt="image" src="https://github.com/user-attachments/assets/cb12e507-b7dc-4f9a-a4fb-f80e8dce1dfe" />
+
+---
 
 <img height="300" alt="image" src="https://github.com/user-attachments/assets/5680441c-d097-4086-9e8e-fc497fe35733" />
 
@@ -101,6 +104,11 @@ The wiring diagram (screenshot in the assembly section below) is made in EasyEDA
 7. Secure the protoboard with a M2 screw and plugin the esp32 and mpu6050.
 
 8. Secure the lid with 4 M2 screws, then put the joystick heads and potentiometer knobs (cut the knobs short).
+
+---
+<img width="853" height="706" alt="image" src="https://github.com/user-attachments/assets/dd32a48f-2b62-4d39-ad66-337a579c8898" />
+
+---
 
 <img height="300" alt="image" src="https://github.com/user-attachments/assets/86304ddb-9377-4275-8345-26b131e75946" />
 <img height="300" alt="image" src="https://github.com/user-attachments/assets/62c73b5d-d189-4f2e-bd1e-75345a0e3c98" />
