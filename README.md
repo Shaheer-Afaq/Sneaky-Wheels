@@ -6,7 +6,7 @@ The 3d model of the casings is designed in Onshape:
 [Onshape Document
 ](https://cad.onshape.com/documents/f87c3accc4a240ed7dab0743/w/c73ea29120acd2fcd4fea41f/e/9db8dd83f8640be167385dda?renderMode=0&uiState=6a2569f5615ba25f815471c3)
 
-The wiring diagram (screenshot in the assembly section below) is made in EasyEDA
+The wiring diagram (screenshot in the assembly section below) is made in EasyEDA. This is a hand-wired project.
 
 
 ## Components to be used:
