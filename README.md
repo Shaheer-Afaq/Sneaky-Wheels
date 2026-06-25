@@ -65,7 +65,7 @@ I designed the 3d model of the casings in Onshape:
 14. Put the wheels on each motor.
 
 ---
-<img width="1091" height="607" alt="image" src="https://github.com/user-attachments/assets/0191f743-069e-4cda-a1fb-c0c50f748a0f" />
+<img width="1113" height="639" alt="image" src="https://github.com/user-attachments/assets/cb12e507-b7dc-4f9a-a4fb-f80e8dce1dfe" />
 
 ---
 
