@@ -36,15 +36,6 @@ I designed the 3d model of the casings in Onshape:
 - 3mm and 7mm heat shrink tubes, 1 meter each (optional)
 - 18x M2 screws
 
-
-Joysticks and protoboard are fastened with M2 screws
-
-Pcb componenets are soldered on the protoboard
-
-Buttons, potentiometers and cells are fitted in slots and would be glued
-
-The lids are aligned with slots, and fastened with M2 screws
-
 ## Car Assembly
 
 1. Solder wires to motors with 2-pin molex connectors.
