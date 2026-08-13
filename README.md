@@ -80,7 +80,7 @@ The wiring diagram (screenshot in the assembly section below) is made in EasyEDA
 14. Put the wheels on each motor.
 
 ---
-<img width="1113" height="639" alt="image" src="https://github.com/user-attachments/assets/cb12e507-b7dc-4f9a-a4fb-f80e8dce1dfe" />
+<img width="1101" height="603" alt="image" src="https://github.com/user-attachments/assets/d06d3082-5b07-4ed1-9c77-3b72e3bf763a" />
 
 ---
 
@@ -121,18 +121,20 @@ The wiring diagram (screenshot in the assembly section below) is made in EasyEDA
 8. Secure the lid with 4 M2 screws, then put the joystick heads and potentiometer knobs (cut the knobs short).
 
 ---
-<img width="853" height="706" alt="image" src="https://github.com/user-attachments/assets/dd32a48f-2b62-4d39-ad66-337a579c8898" />
+<img width="633" height="520" alt="image" src="https://github.com/user-attachments/assets/826218d4-21a6-4c68-8c4c-aabb98389eed" />
 
 ---
 
-<img height="300" alt="image" src="https://github.com/user-attachments/assets/86304ddb-9377-4275-8345-26b131e75946" />
-<img height="300" alt="image" src="https://github.com/user-attachments/assets/62c73b5d-d189-4f2e-bd1e-75345a0e3c98" />
+<img height="300" alt="image" src="https://github.com/user-attachments/assets/0d03a5f9-ebdb-4440-a4e6-454d448a9ef9" />
+<img height="300" alt="image" src="https://github.com/user-attachments/assets/f34acff1-4bc2-426d-97e5-337b48683d54" />
 
 ### Top
-<img height="300" alt="image" src="https://github.com/user-attachments/assets/57eeaed4-c33a-40d9-b4af-b095293210f3" />
+<img height="300" alt="image" src="https://github.com/user-attachments/assets/1004be86-d16d-4d78-98f6-943b8ed8b6f1" />
 
 ### Sides 
-<img height="300" alt="image" src="https://github.com/user-attachments/assets/695187b9-c881-44e1-80e0-e0f9f0dda3d1" />
-<img height="300" alt="image" src="https://github.com/user-attachments/assets/7478d2ce-500a-46f5-8948-0f06cc4bc357" />
+
+<img width="500" alt="image" src="https://github.com/user-attachments/assets/40c26539-8ef2-4742-9bcf-388cb372dcc2" />
+<br>
+<img width="500" alt="image" src="https://github.com/user-attachments/assets/30190723-5c1d-4c1e-af5f-6d3bc1792a2b" />
 
 ---
