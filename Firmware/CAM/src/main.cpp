@@ -10,8 +10,8 @@
 // ===========================
 // Enter your WiFi credentials
 // ===========================
-const char *ssid = "**********";
-const char *password = "**********";
+const char *ssid = "espcam";
+const char *password = "espcam123";
 
 void startCameraServer();
 void setupLedFlash();
