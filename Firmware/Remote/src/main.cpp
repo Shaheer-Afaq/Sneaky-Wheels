@@ -18,102 +18,72 @@
 
 // }
 
-/*
-  ESP-NOW Demo - Transmit
-  esp-now-demo-xmit.ino
-  Sends data to Responder
-  
-  DroneBot Workshop 2022
-  https://dronebotworkshop.com
-*/
-
-#include <esp_now.h>
 #include <WiFi.h>
+#include <esp_now.h>
 
-// Variables for test data
-int int_value;
-float float_value;
-bool bool_value = true;
-
-// MAC Address of responder - edit as required
+// MAC Address of responder
 uint8_t broadcastAddress[] = {0x24, 0x6F, 0x28, 0x7A, 0xAE, 0x7C};
+
+#define joy1x 34;
+#define joy1y 35;
+#define joy1s 14;
+#define joy2x 32;
+#define joy2y 33;
+#define joy2s 13;
+
+#define pot1 36;
+#define pot2 39;
+
+#define button 23;
 
 // Define a data structure
 typedef struct struct_message {
-  char a[32];
-  int b;
-  float c;
-  bool d;
+
 } struct_message;
 
-// Create a structured object
 struct_message myData;
-
-// Peer info
 esp_now_peer_info_t peerInfo;
 
-// Callback function called when data is sent
 void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
-  Serial.print("\r\nLast Packet Send Status:\t");
-  Serial.println(status == ESP_NOW_SEND_SUCCESS ? "Delivery Success" : "Delivery Fail");
+   Serial.print("\r\nLast Packet Send Status:\t");
+   Serial.println(status == ESP_NOW_SEND_SUCCESS ? "Delivery Success"
+                                                 : "Delivery Fail");
 }
 
 void setup() {
-  
-  // Set up Serial Monitor
-  Serial.begin(115200);
- 
-  // Set ESP32 as a Wi-Fi Station
-  WiFi.mode(WIFI_STA);
+   Serial.begin(115200);
+   pinMode(23, INPUT_PULLUP);
 
-  // Initilize ESP-NOW
-  if (esp_now_init() != ESP_OK) {
-    Serial.println("Error initializing ESP-NOW");
-    return;
-  }
+   WiFi.mode(WIFI_STA);
 
-  // Register the send callback
-  esp_now_register_send_cb(OnDataSent);
-  
-  // Register peer
-  memcpy(peerInfo.peer_addr, broadcastAddress, 6);
-  peerInfo.channel = 0;  
-  peerInfo.encrypt = false;
-  
-  // Add peer        
-  if (esp_now_add_peer(&peerInfo) != ESP_OK){
-    Serial.println("Failed to add peer");
-    return;
-  }
+   if (esp_now_init() != ESP_OK) {
+      Serial.println("Error initializing ESP-NOW");
+      return;
+   }
+
+   esp_now_register_send_cb(OnDataSent);
+
+   // Register peer
+   memcpy(peerInfo.peer_addr, broadcastAddress, 6);
+   peerInfo.channel = 0;
+   peerInfo.encrypt = false;
+
+   // Add peer
+   if (esp_now_add_peer(&peerInfo) != ESP_OK) {
+      Serial.println("Failed to add peer");
+      return;
+   }
 }
 
 void loop() {
 
-  // Create test data
 
-  // Generate a random integer
-  int_value = random(1,20);
+   esp_err_t result = esp_now_send(broadcastAddress, (uint8_t *)&myData, sizeof(myData));
 
-  // Use integer to make a new float
-  float_value = 1.3 * int_value;
-
-  // Invert the boolean value
-  bool_value = !bool_value;
-  
-  // Format structured data
-  strcpy(myData.a, "Welcome to the Workshop!");
-  myData.b = int_value;
-  myData.c = float_value;
-  myData.d = bool_value;
-  
-  // Send message via ESP-NOW
-  esp_err_t result = esp_now_send(broadcastAddress, (uint8_t *) &myData, sizeof(myData));
-   
-  if (result == ESP_OK) {
-    Serial.println("Sending confirmed");
-  }
-  else {
-    Serial.println("Sending error");
-  }
-  delay(50);
+   if (result == ESP_OK) {
+      Serial.println("Sending confirmed");
+   } else {
+      Serial.println("Sending error");
+   }
+   delay(50);
 }

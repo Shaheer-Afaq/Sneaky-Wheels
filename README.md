@@ -59,7 +59,7 @@ The wiring diagram (screenshot in the assembly section below) is made in EasyEDA
 
 2. Build a 3S battery by soldering the wires on the bms, (circuit shown in the schematic below)
 
-3. Solder wires to the bms, power jack, buck converter and push button according to the schematic.Solder wires on the output of the buck converter with a 2-pin female connector
+3. Solder wires to the bms, power jack, buck converter and push button according to the schematic. Solder wires on the output of the buck converter with a 2-pin female connector
 
 4. Fix the motors in their slots in the corners and use super glue to fix them if they are loose.
 
@@ -73,7 +73,7 @@ The wiring diagram (screenshot in the assembly section below) is made in EasyEDA
 
 9. Solder female header pins for esp32 and motor driver as shown in the top-view.
 
-10. Solder male molex connectors on the protoboard for the motors, LEDs and one push button, anywhere on the empty space (make sure to optimize the positions according to the schematic)
+10. Solder male molex connectors on the protoboard for the motors, LEDs and one push button, anywhere on the empty space (make sure to optimize the positions according to the schematic). And solder other components like the transistor circuit, and capacitor as shown in the schematic.
 
 11. Use screws to fix the protoboard. Plugin the esp32 and motor driver, and stick the buck converter with double sided tape.
 
@@ -114,7 +114,7 @@ The wiring diagram (screenshot in the assembly section below) is made in EasyEDA
 
 4. Put female-female jumper wires on the joysticks and use M2 screws to secure them into place.
 
-5. Fix the potentiometers, push buttons and tp-4506 in their respective slots and glue them as needed.
+5. Fix the potentiometers, push buttons, tp-4506 and XL6009 in their respective slots and glue them as needed.
 
 6. Solder other parts of connector pairs (male holder for each) on the protoboard, optimizing the position according to the schematic.
 
