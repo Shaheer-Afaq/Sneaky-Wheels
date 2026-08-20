@@ -1,30 +1,14 @@
-// Run this first to get the MAC address of the ESP32
-// #include "WiFi.h"
-
-// void setup() {
-
-//   // Setup Serial Monitor
-//   Serial.begin(115200);
-
-//   // Put ESP32 into Station mode
-//   WiFi.mode(WIFI_MODE_STA);
-
-//   // Print MAC Address to Serial monitor
-//   Serial.print("MAC Address: ");
-//   Serial.println(WiFi.macAddress());
-// }
-
-// void loop() {
-
-// }
-
 #include "esp_wifi.h"
 #include <WiFi.h>
 #include <esp_now.h>
 
+#include "Wire.h"
+#include <MPU6050_light.h>
 
-// MAC Address of responder
-uint8_t broadcastAddress[] = {0x24, 0x6F, 0x28, 0x7A, 0xAE, 0x7C}; //dummy address
+MPU6050 mpu(Wire);
+
+uint8_t broadcastAddress[] = {0x24, 0x6F, 0x28,
+                              0x7A, 0xAE, 0x7C}; // dummy address
 
 #define joy1x 34
 #define joy1y 35
@@ -38,17 +22,19 @@ uint8_t broadcastAddress[] = {0x24, 0x6F, 0x28, 0x7A, 0xAE, 0x7C}; //dummy addre
 
 #define button 23
 
-
 struct data {
-   int16_t x1;
-   int16_t y1;
-   boolean b1;
-   int16_t x2;
-   int16_t y2;
-   boolean b2;
-   int16_t p1;
-   int16_t p2;
-   boolean b3;
+   int16_t x1; // joystick 1 x-axis
+   int16_t y1; // joystick 1 y-axis
+   boolean b1; // joystick 1 button
+   int16_t x2; // joystick 2 x-axis
+   int16_t y2; // joystick 2 y-axis
+   boolean b2; // joystick 2 button
+   int16_t p1; // potentiometer 1
+   int16_t p2; // potentiometer 2
+   boolean b3; // button
+   int16_t aX; // angle x
+   int16_t aY; // angle y
+   int16_t aZ; // angle z
 };
 
 data myData;
@@ -66,6 +52,7 @@ void setup() {
    pinMode(joy2b, INPUT_PULLUP);
    pinMode(button, INPUT_PULLUP);
 
+   // ESP-NOW Setup
    WiFi.mode(WIFI_STA);
    esp_wifi_set_channel(1, WIFI_SECOND_CHAN_NONE);
 
@@ -76,16 +63,19 @@ void setup() {
 
    esp_now_register_send_cb(OnDataSent);
 
-   // Register peer
    memcpy(peerInfo.peer_addr, broadcastAddress, 6);
    peerInfo.channel = 1;
    peerInfo.encrypt = false;
 
-   // Add peer
    if (esp_now_add_peer(&peerInfo) != ESP_OK) {
       Serial.println("Failed to add peer");
       return;
    }
+
+   // MPU6050 Setup
+   Wire.begin();
+   mpu.begin();
+   mpu.calcAccOffsets();
 }
 
 void loop() {
@@ -99,6 +89,11 @@ void loop() {
    myData.p2 = analogRead(pot2);
    myData.b3 = !digitalRead(button);
 
+   mpu.update();
+   myData.aX = mpu.getAngleX();
+   myData.aY = mpu.getAngleY();
+   myData.aZ = mpu.getAngleZ();
+
    esp_err_t result =
        esp_now_send(broadcastAddress, (uint8_t *)&myData, sizeof(myData));
 
@@ -107,5 +102,5 @@ void loop() {
    } else {
       Serial.println("Sending error");
    }
-   delay(50);
+   delay(40);
 }

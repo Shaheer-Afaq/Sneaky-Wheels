@@ -177,7 +177,7 @@
 #define PCLK_GPIO_NUM  22
 
 // 4 for flash led or 33 for normal led
-#define LED_GPIO_NUM   4
+// #define LED_GPIO_NUM   4
 
 #elif defined(CAMERA_MODEL_TTGO_T_JOURNAL)
 #define PWDN_GPIO_NUM  0
