@@ -20,36 +20,41 @@ void loop() {
 }
 */
 
-#include <esp_now.h>
 #include <WiFi.h>
+#include <esp_now.h>
+#include <esp_wifi.h>
+
 
 // Define a data structure
-typedef struct struct_message
-{
+struct data {
+   int16_t x1;
+   int16_t y1;
+   boolean b1;
+   int16_t x2;
+   int16_t y2;
+   boolean b2;
+   int16_t p1;
+   int16_t p2;
+   boolean b3;
+};
 
-} struct_message;
+data myData;
 
-struct_message myData;
-
-void OnDataRecv(const uint8_t *mac, const uint8_t *incomingData, int len)
-{
-    memcpy(&myData, incomingData, sizeof(myData));
+void OnDataRecv(const uint8_t *mac, const uint8_t *incomingData, int len) {
+   memcpy(&myData, incomingData, sizeof(myData));
 }
 
-void setup()
-{
-    Serial.begin(115200);
-    WiFi.mode(WIFI_STA);
+void setup() {
+   Serial.begin(115200);
+   WiFi.mode(WIFI_STA);
+   esp_wifi_set_channel(1, WIFI_SECOND_CHAN_NONE);
 
-    if (esp_now_init() != ESP_OK)
-    {
-        Serial.println("Error initializing ESP-NOW");
-        return;
-    }
+   if (esp_now_init() != ESP_OK) {
+      Serial.println("Error initializing ESP-NOW");
+      return;
+   }
 
-    esp_now_register_recv_cb(OnDataRecv);
+   esp_now_register_recv_cb(OnDataRecv);
 }
 
-void loop()
-{
-}
+void loop() {}
