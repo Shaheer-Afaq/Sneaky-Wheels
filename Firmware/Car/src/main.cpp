@@ -25,7 +25,6 @@ void loop() {
 #include <esp_wifi.h>
 
 
-// Define a data structure
 struct data {
    int16_t x1;
    int16_t y1;
@@ -55,6 +54,8 @@ void setup() {
    }
 
    esp_now_register_recv_cb(OnDataRecv);
+
+
 }
 
 void loop() {}

@@ -107,25 +107,19 @@ void setup() {
   setupLedFlash();
 #endif
 
-  WiFi.begin(ssid, password);
+  WiFi.softAP(ssid);
   WiFi.setSleep(false);
 
-  Serial.print("WiFi connecting");
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
-  }
   Serial.println("");
-  Serial.println("WiFi connected");
+  Serial.println("WiFi AP started");
 
   startCameraServer();
 
   Serial.print("Camera Ready! Use 'http://");
-  Serial.print(WiFi.localIP());
+  Serial.print(WiFi.softAPIP());
   Serial.println("' to connect");
 }
 
 void loop() {
-  // Do nothing. Everything is done in another task by the web server
   delay(10000);
 }

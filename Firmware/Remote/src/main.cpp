@@ -24,7 +24,7 @@
 
 
 // MAC Address of responder
-uint8_t broadcastAddress[] = {0x24, 0x6F, 0x28, 0x7A, 0xAE, 0x7C};
+uint8_t broadcastAddress[] = {0x24, 0x6F, 0x28, 0x7A, 0xAE, 0x7C}; //dummy address
 
 #define joy1x 34
 #define joy1y 35
@@ -38,7 +38,7 @@ uint8_t broadcastAddress[] = {0x24, 0x6F, 0x28, 0x7A, 0xAE, 0x7C};
 
 #define button 23
 
-// Define a data structure
+
 struct data {
    int16_t x1;
    int16_t y1;
