@@ -54,6 +54,8 @@ data myData;
 bool gyroModeOn = false;
 bool headlightOn = false;
 
+const int turnRadius = 10;
+
 void OnDataRecv(const uint8_t *mac, const uint8_t *incomingData, int len);
 
 void setup() {
@@ -78,18 +80,40 @@ void setup() {
 }
 
 void loop() {
-   
+   gyroModeOn = myData.b1;
+
+   if (gyroModeOn) {
+
+   } else {
+      int throttle = map(myData.y1, 0, 4095, -255, 255);
+      int steering = map(myData.x2, 0, 4095, -255, 255);
+      int rightSpeed, leftSpeed;
+
+      if (throttle < 20){
+         rightSpeed = -steering;
+         leftSpeed = steering;
+      } else {
+         rightSpeed = throttle;
+         leftSpeed = throttle;
+
+         if (steering > 20) {
+            rightSpeed = throttle * (255 - steering) / 255;
+         } else if (steering < -20) {
+            leftSpeed = throttle * (255 + steering) / 255;
+         }
+      }
+   }
 }
 
 void OnDataRecv(const uint8_t *mac, const uint8_t *incomingData, int len) {
    memcpy(&myData, incomingData, sizeof(myData));
 }
 
-void driveRightMotor(int speed){
-   if (speed > 0){
+void driveRightMotor(int speed) {
+   if (speed > 0) {
       digitalWrite(motorA1, HIGH);
       digitalWrite(motorA2, LOW);
-   } else if (speed < 0){
+   } else if (speed < 0) {
       digitalWrite(motorA1, LOW);
       digitalWrite(motorA2, HIGH);
    } else {
@@ -99,11 +123,11 @@ void driveRightMotor(int speed){
    analogWrite(motorAS, abs(speed));
 }
 
-void driveLeftMotor(int speed){
-   if (speed > 0){
+void driveLeftMotor(int speed) {
+   if (speed > 0) {
       digitalWrite(motorB1, HIGH);
       digitalWrite(motorB2, LOW);
-   } else if (speed < 0){
+   } else if (speed < 0) {
       digitalWrite(motorB1, LOW);
       digitalWrite(motorB2, HIGH);
    } else {

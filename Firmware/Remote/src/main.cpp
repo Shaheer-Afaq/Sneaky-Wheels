@@ -7,8 +7,7 @@
 
 MPU6050 mpu(Wire);
 
-uint8_t broadcastAddress[] = {0x24, 0x6F, 0x28,
-                              0x7A, 0xAE, 0x7C}; // dummy address
+uint8_t broadcastAddress[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 
 #define joy1x 34
 #define joy1y 35
