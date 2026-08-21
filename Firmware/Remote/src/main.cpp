@@ -74,7 +74,7 @@ void setup() {
    // MPU6050 Setup
    Wire.begin();
    mpu.begin();
-   mpu.calcAccOffsets();
+   mpu.calcOffsets();
 }
 
 void loop() {

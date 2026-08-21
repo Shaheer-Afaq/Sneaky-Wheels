@@ -51,12 +51,14 @@ struct data {
 
 data myData;
 
-bool gyroModeOn = false;
-bool headlightOn = false;
-
-const int turnRadius = 10;
+bool lightButtonWasPressed = false;
+bool lightOn = false;
+unsigned long lastPacketTime = 0;
+int sensitivity = 30;
 
 void OnDataRecv(const uint8_t *mac, const uint8_t *incomingData, int len);
+void driveRightMotor(int speed);
+void driveLeftMotor(int speed);
 
 void setup() {
    Serial.begin(115200);
@@ -80,33 +82,54 @@ void setup() {
 }
 
 void loop() {
-   gyroModeOn = myData.b1;
+   // stop the car if the connection is lost for more than 300ms
+   if (millis() - lastPacketTime > 300) {
+      driveRightMotor(0);
+      driveLeftMotor(0);
+      digitalWrite(headlight, LOW);
+      return;
+   }
 
-   if (gyroModeOn) {
+   sensitivity = map(myData.p1, 0, 4095, 30, 90);
 
+   int throttle, steering;
+   if (myData.b1) { // if gyro mode is enabled
+      throttle = constrain(map(myData.aX, -sensitivity, sensitivity, -255, 255), -255, 255);
+      steering = constrain(map(myData.aY, -sensitivity, sensitivity, -255, 255), -255, 255);
    } else {
-      int throttle = map(myData.y1, 0, 4095, -255, 255);
-      int steering = map(myData.x2, 0, 4095, -255, 255);
-      int rightSpeed, leftSpeed;
+      throttle = map(myData.y1, 0, 4095, -255, 255);
+      steering = map(myData.x2, 0, 4095, -255, 255);
+   }
 
-      if (throttle < 20){
-         rightSpeed = -steering;
-         leftSpeed = steering;
-      } else {
-         rightSpeed = throttle;
-         leftSpeed = throttle;
+   int rightSpeed, leftSpeed;
+   if (abs(throttle) < 20) { // for spinning in place
+      rightSpeed = -steering;
+      leftSpeed = steering;
+   } else {
+      rightSpeed = throttle;
+      leftSpeed = throttle;
+      // to reduce the speed of one motor based on steering strength and direction
+      if (steering > 20) rightSpeed = throttle * (255 - steering) / 255;
+      else if (steering < -20) leftSpeed = throttle * (255 + steering) / 255;
+   }
+   driveRightMotor(rightSpeed);
+   driveLeftMotor(leftSpeed);
 
-         if (steering > 20) {
-            rightSpeed = throttle * (255 - steering) / 255;
-         } else if (steering < -20) {
-            leftSpeed = throttle * (255 + steering) / 255;
-         }
-      }
+   // toggle headlight
+   if (myData.b3) lightButtonWasPressed = true;
+
+   if (lightButtonWasPressed && !myData.b3) {
+      lightOn = !lightOn;
+      lightButtonWasPressed = false;
+      digitalWrite(headlight, lightOn);
    }
 }
 
 void OnDataRecv(const uint8_t *mac, const uint8_t *incomingData, int len) {
-   memcpy(&myData, incomingData, sizeof(myData));
+   if (len == sizeof(myData)) {
+      memcpy(&myData, incomingData, sizeof(myData));
+      lastPacketTime = millis();
+   }
 }
 
 void driveRightMotor(int speed) {
