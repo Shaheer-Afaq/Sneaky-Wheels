@@ -7,21 +7,22 @@
 
 MPU6050 mpu(Wire);
 
-uint8_t broadcastAddress[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
+// uint8_t broadcastAddress[] = {0xB0 , 0x3F , 0xD3 , 0x6F , 0x46 , 0x30};
+uint8_t broadcastAddress[] = {0x20 , 0x50 , 0x0D , 0xD1 , 0x65 , 0x50};
 
-#define joy1x 34
-#define joy1y 35
-#define joy1b 14
-#define joy2x 32
-#define joy2y 33
-#define joy2b 13
+#define joy1x 33
+#define joy1y 32
+#define joy1b 18
+#define joy2x 35
+#define joy2y 34
+#define joy2b 4
 
 #define pot1 36
 #define pot2 39
 
 #define button 23
 
-struct data {
+               struct data {
    int16_t x1; // joystick 1 x-axis
    int16_t y1; // joystick 1 y-axis
    boolean b1; // joystick 1 button
@@ -53,6 +54,7 @@ void setup() {
 
    // ESP-NOW Setup
    WiFi.mode(WIFI_STA);
+   esp_wifi_set_ps(WIFI_PS_NONE);
    esp_wifi_set_channel(1, WIFI_SECOND_CHAN_NONE);
 
    if (esp_now_init() != ESP_OK) {
@@ -101,5 +103,5 @@ void loop() {
    } else {
       Serial.println("Sending error");
    }
-   delay(40);
+   delay(30);
 }

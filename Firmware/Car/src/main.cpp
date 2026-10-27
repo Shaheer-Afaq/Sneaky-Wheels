@@ -1,36 +1,36 @@
 // Run this first to get the MAC address of the ESP32
-/*
-#include "WiFi.h"
+// #include "WiFi.h"
 
-void setup() {
+// void setup() {
 
-  // Setup Serial Monitor
-  Serial.begin(115200);
+//   // Setup Serial Monitor
+//   Serial.begin(115200);
 
-  // Put ESP32 into Station mode
-  WiFi.mode(WIFI_MODE_STA);
+//   // Put ESP32 into Station mode
+//   WiFi.mode(WIFI_MODE_STA);
 
-  // Print MAC Address to Serial monitor
-  Serial.print("MAC Address: ");
-  Serial.println(WiFi.macAddress());
-}
+//   // Print MAC Address to Serial monitor
+//   Serial.print("MAC Address: ");
+//   Serial.println(WiFi.macAddress());
+// }
 
-void loop() {
+// void loop() {
 
-}
-*/
+// }
 
 #include <WiFi.h>
 #include <esp_now.h>
 #include <esp_wifi.h>
 
-#define motorA1 12
-#define motorA2 13
-#define motorAS 14
+#define motorA1 27
+#define motorA2 26
+#define motorAS 25
 
-#define motorB1 26
-#define motorB2 27
-#define motorBS 25
+#define motorB1 12
+#define motorB2 13
+#define motorBS 14
+
+#define standby 33
 
 #define headlight 23
 
@@ -55,6 +55,12 @@ bool lightButtonWasPressed = false;
 bool lightOn = false;
 unsigned long lastPacketTime = 0;
 int sensitivity = 30;
+int maxSpeed = 255;
+bool firstPacketReceived = false;
+
+const int joy1YCenter = 1760;
+const int joy2XCenter = 1670;
+const int deadzone = 80;
 
 void OnDataRecv(const uint8_t *mac, const uint8_t *incomingData, int len);
 void driveRightMotor(int speed);
@@ -62,6 +68,8 @@ void driveLeftMotor(int speed);
 
 void setup() {
    Serial.begin(115200);
+   pinMode(standby, OUTPUT);
+   digitalWrite(standby, LOW);
 
    pinMode(motorA1, OUTPUT);
    pinMode(motorA2, OUTPUT);
@@ -72,6 +80,7 @@ void setup() {
    pinMode(headlight, OUTPUT);
 
    WiFi.mode(WIFI_STA);
+   esp_wifi_set_ps(WIFI_PS_NONE);
    esp_wifi_set_channel(1, WIFI_SECOND_CHAN_NONE);
 
    if (esp_now_init() != ESP_OK) {
@@ -79,28 +88,53 @@ void setup() {
       return;
    }
    esp_now_register_recv_cb(OnDataRecv);
+   driveRightMotor(0);
+   driveLeftMotor(0);
 }
 
 void loop() {
    // stop the car if the connection is lost for more than 300ms
-   if (millis() - lastPacketTime > 300) {
+   if (!firstPacketReceived || millis() - lastPacketTime > 300) {
+      digitalWrite(standby, LOW);
       driveRightMotor(0);
       driveLeftMotor(0);
       digitalWrite(headlight, LOW);
+      Serial.println("Connection lost");
+      if (millis() - lastPacketTime > 1000 && firstPacketReceived) {
+         ESP.restart();
+      }
       return;
    }
-
-   sensitivity = map(myData.p1, 0, 4095, 30, 90);
+   digitalWrite(standby, HIGH);
 
    int throttle, steering;
-   if (myData.b1) { // if gyro mode is enabled
-      throttle = constrain(map(myData.aX, -sensitivity, sensitivity, -255, 255), -255, 255);
-      steering = constrain(map(myData.aY, -sensitivity, sensitivity, -255, 255), -255, 255);
+   if (myData.b3) { // if gyro mode is enabled
+      sensitivity = map(myData.p2, 0, 4095, 30, 90);
+      throttle = constrain(map(myData.aY, -sensitivity, sensitivity, -255, 255), -255, 255);
+      steering = constrain(map(myData.aX, -sensitivity, sensitivity, -255, 255), -255, 255) * -1;
+      maxSpeed = 255;
    } else {
-      throttle = map(myData.y1, 0, 4095, -255, 255);
-      steering = map(myData.x2, 0, 4095, -255, 255);
-   }
+      maxSpeed = map(myData.p2, 0, 4095, 100, 255);
+      int rawThrottle = myData.y1 - joy1YCenter; // to adjust for joystick inaccuracy
+      int rawSteering = myData.x2 - joy2XCenter;
 
+      if (abs(rawThrottle) < deadzone) {
+         throttle = 0;
+      } else if (rawThrottle >= 0) {
+         throttle = map(rawThrottle, deadzone, 4095 - joy1YCenter, 0, maxSpeed);
+      } else {
+         throttle = map(rawThrottle, -joy1YCenter, -deadzone, -maxSpeed, 0);
+      }
+
+      if (abs(rawSteering) < deadzone) {
+         steering = 0;
+      } else if (rawSteering >= 0) {
+         steering = map(rawSteering, 0, 4095 - joy2XCenter, 0, maxSpeed);
+      } else {
+         steering = map(rawSteering, -joy2XCenter, 0, -maxSpeed, 0);
+      }
+      steering = steering * -1; // invert steering direction
+   }
    int rightSpeed, leftSpeed;
    if (abs(throttle) < 20) { // for spinning in place
       rightSpeed = -steering;
@@ -109,23 +143,26 @@ void loop() {
       rightSpeed = throttle;
       leftSpeed = throttle;
       // to reduce the speed of one motor based on steering strength and direction
-      if (steering > 20) rightSpeed = throttle * (255 - steering) / 255;
-      else if (steering < -20) leftSpeed = throttle * (255 + steering) / 255;
+      if (steering > 20) rightSpeed = throttle * (maxSpeed - steering) / maxSpeed;
+      else if (steering < -20) leftSpeed = throttle * (maxSpeed + steering) / maxSpeed;
    }
+
    driveRightMotor(rightSpeed);
    driveLeftMotor(leftSpeed);
 
    // toggle headlight
-   if (myData.b3) lightButtonWasPressed = true;
+   if (myData.b1) lightButtonWasPressed = true;
 
-   if (lightButtonWasPressed && !myData.b3) {
+   if (lightButtonWasPressed && !myData.b1) {
       lightOn = !lightOn;
       lightButtonWasPressed = false;
       digitalWrite(headlight, lightOn);
    }
+   delay(10);
 }
 
 void OnDataRecv(const uint8_t *mac, const uint8_t *incomingData, int len) {
+   firstPacketReceived = true;
    if (len == sizeof(myData)) {
       memcpy(&myData, incomingData, sizeof(myData));
       lastPacketTime = millis();
