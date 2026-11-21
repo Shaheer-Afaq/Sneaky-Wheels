@@ -8,7 +8,7 @@
 MPU6050 mpu(Wire);
 
 // uint8_t broadcastAddress[] = {0xB0 , 0x3F , 0xD3 , 0x6F , 0x46 , 0x30};
-uint8_t broadcastAddress[] = {0x20 , 0x50 , 0x0D , 0xD1 , 0x65 , 0x50};
+uint8_t broadcastAddress[] = {0x20, 0x50, 0x0D, 0xD1, 0x65, 0x50};
 
 #define joy1x 33
 #define joy1y 32
@@ -22,7 +22,7 @@ uint8_t broadcastAddress[] = {0x20 , 0x50 , 0x0D , 0xD1 , 0x65 , 0x50};
 
 #define button 23
 
-               struct data {
+struct data {
    int16_t x1; // joystick 1 x-axis
    int16_t y1; // joystick 1 y-axis
    boolean b1; // joystick 1 button

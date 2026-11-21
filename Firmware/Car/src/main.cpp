@@ -20,6 +20,7 @@
 
 #include <WiFi.h>
 #include <esp_now.h>
+#include <esp_task_wdt.h>
 #include <esp_wifi.h>
 
 #define motorA1 27
@@ -55,8 +56,9 @@ bool lightButtonWasPressed = false;
 bool lightOn = false;
 unsigned long lastPacketTime = 0;
 int sensitivity = 30;
-int maxSpeed = 255;
+int maxSpeed = 150;
 bool firstPacketReceived = false;
+int curR = 0, curL = 0;
 
 const int joy1YCenter = 1760;
 const int joy2XCenter = 1670;
@@ -65,6 +67,7 @@ const int deadzone = 80;
 void OnDataRecv(const uint8_t *mac, const uint8_t *incomingData, int len);
 void driveRightMotor(int speed);
 void driveLeftMotor(int speed);
+int ramp(int current, int target);
 
 void setup() {
    Serial.begin(115200);
@@ -78,6 +81,9 @@ void setup() {
    pinMode(motorB2, OUTPUT);
    pinMode(motorBS, OUTPUT);
    pinMode(headlight, OUTPUT);
+
+   // esp_task_wdt_init(1, true);
+   // esp_err_t r = esp_task_wdt_init(2, true);
 
    WiFi.mode(WIFI_STA);
    esp_wifi_set_ps(WIFI_PS_NONE);
@@ -93,16 +99,18 @@ void setup() {
 }
 
 void loop() {
-   // stop the car if the connection is lost for more than 300ms
-   if (!firstPacketReceived || millis() - lastPacketTime > 300) {
+   // // stop the car if the connection is lost for more than 300ms
+   // esp_task_wdt_reset();
+   if (!firstPacketReceived || millis() - lastPacketTime > 600) {
+      curR = 0, curL = 0;
       digitalWrite(standby, LOW);
       driveRightMotor(0);
       driveLeftMotor(0);
       digitalWrite(headlight, LOW);
       Serial.println("Connection lost");
-      if (millis() - lastPacketTime > 1000 && firstPacketReceived) {
-         ESP.restart();
-      }
+      // if (millis() - lastPacketTime > 1000 && firstPacketReceived) {
+      //    ESP.restart();
+      // }
       return;
    }
    digitalWrite(standby, HIGH);
@@ -110,11 +118,11 @@ void loop() {
    int throttle, steering;
    if (myData.b3) { // if gyro mode is enabled
       sensitivity = map(myData.p2, 0, 4095, 30, 90);
-      throttle = constrain(map(myData.aY, -sensitivity, sensitivity, -255, 255), -255, 255);
-      steering = constrain(map(myData.aX, -sensitivity, sensitivity, -255, 255), -255, 255) * -1;
-      maxSpeed = 255;
+      throttle = constrain(map(myData.aY, -sensitivity, sensitivity, -150, 150), -150, 150);
+      steering = constrain(map(myData.aX, -sensitivity, sensitivity, -150, 150), -150, 150) * -1;
+      maxSpeed = 150;
    } else {
-      maxSpeed = map(myData.p2, 0, 4095, 100, 255);
+      maxSpeed = map(myData.p2, 0, 4095, 100, 150);
       int rawThrottle = myData.y1 - joy1YCenter; // to adjust for joystick inaccuracy
       int rawSteering = myData.x2 - joy2XCenter;
 
@@ -147,8 +155,12 @@ void loop() {
       else if (steering < -20) leftSpeed = throttle * (maxSpeed + steering) / maxSpeed;
    }
 
-   driveRightMotor(rightSpeed);
-   driveLeftMotor(leftSpeed);
+   // prevent sudden changes in speed
+
+   curR = ramp(curR, rightSpeed);
+   curL = ramp(curL, leftSpeed);
+   driveRightMotor(curR);
+   driveLeftMotor(curL);
 
    // toggle headlight
    if (myData.b1) lightButtonWasPressed = true;
@@ -195,4 +207,11 @@ void driveLeftMotor(int speed) {
       digitalWrite(motorB2, LOW);
    }
    analogWrite(motorBS, abs(speed));
+}
+
+int ramp(int current, int target) {
+   int step = 12;
+   if (current < target) return min(current + step, target);
+   if (current > target) return max(current - step, target);
+   return current;
 }
