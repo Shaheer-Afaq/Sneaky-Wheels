@@ -1,4 +1,6 @@
 # Sneaky-Wheels
+![spy car](image.png)
+
 This is a remote controlled mini spy car designed in Onshape. I decided to build this because I've always wanted to drive an RC car with the car's POV. I like to watch and record remotely controlled terrain exploration. I finally got the chance to build this due to [Forge's](https://forge.hackclub.com.) funding program. 
 
 The remote has two modes - joystick and gyro, which can be toggled with a button. The car has a camera and it can stream video to a local webserver, via its own hotspot. It also has two headlights to record in the dark.
@@ -12,6 +14,7 @@ The 3d model of the casings is designed in Onshape:
 
 The wiring diagram (screenshot in the assembly section below) is made in EasyEDA. This is a hand-wired project.
 
+[Working Demo Video](https://youtu.be/sWlcDrYsJ28)
 
 ## Bill of Materials:
 | Component                                | Quantity | Price (USD) | Source                                                                                                                                      |
